@@ -19,7 +19,7 @@ class Application
     #[ORM\Column(length: 255)]
     private ?string $application = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
     /**
