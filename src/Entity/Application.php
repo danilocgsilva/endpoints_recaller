@@ -22,14 +22,15 @@ class Application
     private ?string $description = null;
 
     /**
-     * @var Collection<int, Endpoint>
+     * @var Collection<int, Dns>
      */
-    #[ORM\ManyToMany(targetEntity: Endpoint::class, mappedBy: 'application')]
-    private Collection $endpoints;
+    #[ORM\OneToMany(targetEntity: Dns::class, mappedBy: 'application')]
+    private Collection $dns;
 
     public function __construct()
     {
         $this->endpoints = new ArrayCollection();
+        $this->dns = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,27 +63,30 @@ class Application
     }
 
     /**
-     * @return Collection<int, Endpoint>
+     * @return Collection<int, Dns>
      */
-    public function getEndpoints(): Collection
+    public function getDns(): Collection
     {
-        return $this->endpoints;
+        return $this->dns;
     }
 
-    public function addEndpoint(Endpoint $endpoint): static
+    public function addDn(Dns $dn): static
     {
-        if (!$this->endpoints->contains($endpoint)) {
-            $this->endpoints->add($endpoint);
-            $endpoint->addApplication($this);
+        if (!$this->dns->contains($dn)) {
+            $this->dns->add($dn);
+            $dn->setApplication($this);
         }
 
         return $this;
     }
 
-    public function removeEndpoint(Endpoint $endpoint): static
+    public function removeDn(Dns $dn): static
     {
-        if ($this->endpoints->removeElement($endpoint)) {
-            $endpoint->removeApplication($this);
+        if ($this->dns->removeElement($dn)) {
+            // set the owning side to null (unless already changed)
+            if ($dn->getApplication() === $this) {
+                $dn->setApplication(null);
+            }
         }
 
         return $this;

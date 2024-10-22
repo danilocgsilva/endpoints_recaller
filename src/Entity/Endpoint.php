@@ -21,11 +21,8 @@ class Endpoint
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @var Collection<int, Application>
-     */
-    #[ORM\ManyToMany(targetEntity: Application::class, inversedBy: 'endpoints')]
-    private Collection $application;
+    #[ORM\ManyToOne(inversedBy: 'endpoints')]
+    private ?Dns $dns = null;
 
     public function __construct()
     {
@@ -61,26 +58,14 @@ class Endpoint
         return $this;
     }
 
-    /**
-     * @return Collection<int, Application>
-     */
-    public function getApplication(): Collection
+    public function getDns(): ?Dns
     {
-        return $this->application;
+        return $this->dns;
     }
 
-    public function addApplication(Application $application): static
+    public function setDns(?Dns $dns): static
     {
-        if (!$this->application->contains($application)) {
-            $this->application->add($application);
-        }
-
-        return $this;
-    }
-
-    public function removeApplication(Application $application): static
-    {
-        $this->application->removeElement($application);
+        $this->dns = $dns;
 
         return $this;
     }
